@@ -4,7 +4,7 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
-COPY /bin/Release/net6.0/ /app/publish/
+COPY . /app/publish/
 
 FROM base AS final
 COPY --from=publish /app/publish .
