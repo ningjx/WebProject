@@ -8,6 +8,7 @@ namespace WebProject
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddControllers();
 
             var app = builder.Build();
 
@@ -21,13 +22,18 @@ namespace WebProject
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
+            
 
             app.UseAuthorization();
 
             app.MapRazorPages();
-
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    //endpoints.MapControllers();
+            //    endpoints.MapControllerRoute("default", "{controller}/{action}/{id?}");
+            //});
+            app.MapControllers();
             app.Run();
         }
     }
