@@ -259,28 +259,28 @@ rule-providers:
   streaming:
     type: http
     behavior: classical
-    url: "https://raw.fastgit.org/ningjx/Clash-Rules/master/Streaming.txt"
+    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/Streaming.txt"
     path: ./ruleset/Streaming.yaml
     interval: 86400
 
   netflix:
     type: http
     behavior: classical
-    url: "https://raw.fastgit.org/ningjx/Clash-Rules/master/NetflixRules.txt"
+    url: "https://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/Netflix.txt"
     path: ./ruleset/NetflixRules.list
     interval: 86400
 
   youtube:
     type: http
     behavior: classical
-    url: "https://raw.fastgit.org/ningjx/Clash-Rules/master/YouTubeRules.txt"
+    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/YouTubeRules.txt"
     path: ./ruleset/YouTubeRules.list
     interval: 86400
 
   disney:
     type: http
     behavior: classical
-    url: "https://raw.fastgit.org/ningjx/Clash-Rules/master/DisneyRules.txt"
+    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/DisneyRules.txt"
     path: ./ruleset/DisneyRules.list
     interval: 86400
 
