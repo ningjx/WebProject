@@ -13,7 +13,7 @@ namespace WebProject.Controllers
         {
             var contentType = "APPLICATION/octet-stream";
 
-            var text = JustMySocksProvider.ConfigProvider.Instance.GetLastestConfig(service, id, useDomain);
+            var text = ConfigProvider.Instance.GetLastestConfig(service, id, useDomain);
             var info = ConfigProvider.Instance.GetServiceInfo(service,id);
             HttpContext.Response.Headers.Add("Subscription-Userinfo", info);
 
