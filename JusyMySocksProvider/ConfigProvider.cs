@@ -28,7 +28,7 @@ namespace JustMySocksProvider
 
         private ConfigProvider() { }
 
-        public string GetLastestConfig(string service,string id,bool useDomain = true)
+        public string GetLastestConfig(string service, string id, bool useDomain = true)
         {
             var link = sbLink.Replace("{service}", service).Replace("{id}", id);
 
@@ -37,7 +37,7 @@ namespace JustMySocksProvider
             return ReplaceParamWith(configText, subInfos, useDomain);
         }
 
-        public string GetServiceInfo(string service,string id)
+        public string GetServiceInfo(string service, string id)
         {
             var link = infoLink.Replace("{service}", service).Replace("{id}", id);
             var data = GetDataFromUrl(link);
@@ -45,7 +45,8 @@ namespace JustMySocksProvider
 
             var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
             //Subscription-Userinfo: upload=2375927198; download=12983696043; total=1099511627776
-            return $"upload=0; download={info.Used}; total={info.Limit}";
+            //Convert 1000 to 1024 by * 1.073741824
+            return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}";
         }
 
         private static string GetDataFromUrl(string url)

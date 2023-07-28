@@ -15,6 +15,7 @@ namespace WebProject.Controllers
 
             var text = ConfigProvider.Instance.GetLastestConfig(service, id, useDomain);
             var info = ConfigProvider.Instance.GetServiceInfo(service,id);
+
             HttpContext.Response.Headers.Add("Subscription-Userinfo", info);
 
             return File(Encoding.UTF8.GetBytes(text), contentType, "ClashConfig.yaml");
