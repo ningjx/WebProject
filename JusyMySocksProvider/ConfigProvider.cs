@@ -10,6 +10,7 @@ namespace JustMySocksProvider
     public class ConfigProvider
     {
         private const string sbLink = "https://jmssub.net/members/getsub.php?service={service}&id={id}";
+        private const string infoLink = "https://justmysocks5.net/members/getbwcounter.php?service={service}&id={id}";
         private static Regex DomainRegex = new Regex(@"(?<=@)(.+)\.(.+).(.+)(?=\:)");
         private static Regex SSInfoRegex = new Regex(@"(?<=ss://)(.+)(?=#)");
 
@@ -36,6 +37,17 @@ namespace JustMySocksProvider
             return ReplaceParamWith(configText, subInfos, useDomain);
         }
 
+        public string GetServiceInfo(string service,string id)
+        {
+            var link = infoLink.Replace("{service}", service).Replace("{id}", id);
+            var data = GetDataFromUrl(link);
+            if (string.IsNullOrEmpty(data)) return string.Empty;
+
+            var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
+            //Subscription-Userinfo: upload=2375927198; download=12983696043; total=1099511627776
+            return $"upload=0; download={info.Used}; total={info.Limit}";
+        }
+
         private static string GetDataFromUrl(string url)
         {
             HttpClient client = new HttpClient();
@@ -44,7 +56,7 @@ namespace JustMySocksProvider
             if (string.IsNullOrEmpty(data))
                 return string.Empty;
 
-            return Base64Decode(data);
+            return data;
         }
 
         private static string Base64Decode(string data)
@@ -62,6 +74,7 @@ namespace JustMySocksProvider
             var data = GetDataFromUrl(url);
             if (string.IsNullOrEmpty(data)) return result;
 
+            data = Base64Decode(data);
             var datas = data.Split('\n');
             foreach (var subInfoStr in datas)
             {
