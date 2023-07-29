@@ -3,7 +3,6 @@
     public class V2rayInfo
     {
         public string ps;
-        public string server;
         public string port;
         public string id;
         public int aid;

@@ -20,5 +20,13 @@ namespace JustMySocksProvider.Tests
             var result = ConfigProvider.Instance.GetServiceInfo(service, id);
             Console.WriteLine(result);
         }
+
+        [TestMethod()]
+        public void GetLastestConfigTest()
+        {
+            string service = "";
+            string id = "";
+            var result = ConfigProvider.Instance.GetLastestConfig(service, id);
+        }
     }
 }

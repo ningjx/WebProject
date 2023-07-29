@@ -13,7 +13,7 @@ namespace JustMySocksProvider
     {
         private const string sbLink = "https://jmssub.net/members/getsub.php?service={service}&id={id}";
         private const string infoLink = "https://justmysocks5.net/members/getbwcounter.php?service={service}&id={id}";
-        private static Regex DomainRegex = new Regex(@"(?<=@)(.+)\.(.+).(.+)(?=\:)");
+        private static Regex DomainRegex = new Regex(@"(?<=@)(.+)(?=\:)");
         private static Regex SSInfoRegex = new Regex(@"(?<=ss://)(.+)(?=#)");
 
         public static ConfigProvider Instance
@@ -33,10 +33,12 @@ namespace JustMySocksProvider
         public string GetLastestConfig(string service, string id, bool useDomain = true)
         {
             var link = sbLink.Replace("{service}", service).Replace("{id}", id);
+            if (useDomain)
+                link += "&usedomains=1";
 
             var configText = Encoding.UTF8.GetString(ConfigResource.ClashConfigTemp);
             var subInfos = GetSubInfos(link);
-            return ReplaceParamWith(configText, subInfos, useDomain);
+            return ReplaceParamWith(configText, subInfos);
         }
 
         public string GetServiceInfo(string service, string id)
@@ -114,18 +116,16 @@ namespace JustMySocksProvider
                 if (subInfoStr.StartsWith("ss://"))
                 {
                     subInfo.SubType = SubType.Shadowsocks;
-                    var domain = DomainRegex.Match(subInfoStr).Value;
 
                     var ssStr = Base64Decode(SSInfoRegex.Match(subInfoStr).Value);
-
                     var infos = ssStr.Split(':', '@');
+
                     subInfo.SSInfo = new SSInfo
                     {
                         cipher = infos[0],
                         password = infos[1],
-                        ip = infos[2],
+                        server = infos[2],
                         port = infos[3],
-                        server = domain
                     };
                 }
                 if (subInfoStr.StartsWith("vmess://"))
@@ -135,7 +135,6 @@ namespace JustMySocksProvider
                     var v2rayStr = Base64Decode(subInfoStr.Replace("vmess://", ""));
 
                     subInfo.v2RayInfo = JsonConvert.DeserializeObject<V2rayInfo>(v2rayStr);
-                    subInfo.v2RayInfo.server = DomainRegex.Match(subInfo.v2RayInfo.ps).Value;
                 }
                 result.Add(subInfo);
             }
@@ -143,7 +142,7 @@ namespace JustMySocksProvider
             return result;
         }
 
-        private static string ReplaceParamWith(string text, List<SubInfo> subInfos, bool useDomain = true)
+        private static string ReplaceParamWith(string text, List<SubInfo> subInfos)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(text);
@@ -163,7 +162,7 @@ namespace JustMySocksProvider
                     string c = $"SSCipherReplace{ssIndex}";
                     string d = $"SSPasswordReplace{ssIndex}";
 
-                    builder = builder.Replace(a, useDomain == true ? info.SSInfo.server : info.SSInfo.ip);
+                    builder = builder.Replace(a, info.SSInfo.server);
                     builder = builder.Replace(b, info.SSInfo.port);
                     builder = builder.Replace(c, info.SSInfo.cipher);
                     builder = builder.Replace(d, info.SSInfo.password);
@@ -182,7 +181,7 @@ namespace JustMySocksProvider
                     string c = $"V2rayUUIDReplace{v2rIndex}";
                     string d = $"V2rayAIDReplace{v2rIndex}";
 
-                    builder = builder.Replace(a, useDomain == true ? info.v2RayInfo.server : info.v2RayInfo.add);
+                    builder = builder.Replace(a, info.v2RayInfo.add);
                     builder = builder.Replace(b, info.v2RayInfo.port);
                     builder = builder.Replace(c, info.v2RayInfo.id);
                     builder = builder.Replace(d, info.v2RayInfo.aid.ToString());
