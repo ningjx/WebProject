@@ -2,6 +2,7 @@
 using JustMySocksProvider.Models;
 using Newtonsoft.Json;
 using System.Data;
+using System.Net.WebSockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -41,7 +42,8 @@ namespace JustMySocksProvider
         public string GetServiceInfo(string service, string id)
         {
             var link = infoLink.Replace("{service}", service).Replace("{id}", id);
-            var data = GetDataFromUrl(link);
+            //var data = "{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
+            var data = GetDataFromUrl(link);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
             if (string.IsNullOrEmpty(data)) return string.Empty;
 
             var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
@@ -50,21 +52,29 @@ namespace JustMySocksProvider
             //1.024 * 1.024 * 1.024 =  1.073741824
             //Convert 1000 to 1024 by * 1.073741824
             DateTime expireTime;
-            var startTime  = new DateTime(1970, 1, 1, 0, 0, 0);
             //Los Angeles time zone : UTC-7
             //Get current Los Angeles time
-            TimeZoneInfo pstZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-            DateTime pdtTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pstZone);
-            if (pdtTime.Day < info.ResetDay)
-                expireTime = pdtTime.AddDays(info.ResetDay - pdtTime.Day);//本月?号
-            else
+            TimeZoneInfo laZone = TimeZoneInfo.FindSystemTimeZoneById("US Mountain Standard Time");
+            DateTime laTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, laZone);
+
+            if (laTime.Day < info.ResetDay)
             {
-                var nextMonth = pdtTime.AddMonths(1);
-                //次月?号
-                expireTime = new DateTime(nextMonth.Year, nextMonth.Month, 1, nextMonth.Hour, nextMonth.Minute, nextMonth.Second).AddDays(info.ResetDay);
+                var thisMonth = laTime.AddDays(info.ResetDay - laTime.Day);
+                //本月?号
+                expireTime = new DateTime(thisMonth.Year, thisMonth.Month, thisMonth.Day);
             }
 
-            var timeStamp = Convert.ToInt64((expireTime.ToUniversalTime() - startTime).TotalSeconds);
+            else
+            {
+                var nextMonth = laTime.AddMonths(1);
+                //次月?号
+                expireTime = new DateTime(nextMonth.Year, nextMonth.Month, 1);
+                expireTime = expireTime.AddDays(info.ResetDay - expireTime.Day);
+            }
+
+            var utcTime = expireTime - laZone.BaseUtcOffset;//LA time to UTC time
+            var timeStamp = Convert.ToInt64((utcTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
+
             return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={timeStamp}";
         }
 

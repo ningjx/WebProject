@@ -14,6 +14,7 @@ namespace JustMySocksProvider.Tests
         [TestMethod()]
         public void GetServiceInfoTest()
         {
+            var zones = TimeZoneInfo.GetSystemTimeZones();
             string service = "";
             string id = "";
             var result = ConfigProvider.Instance.GetServiceInfo(service, id);
