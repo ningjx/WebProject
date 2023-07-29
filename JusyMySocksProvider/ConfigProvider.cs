@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace JustMySocksProvider
 {
@@ -44,9 +45,27 @@ namespace JustMySocksProvider
             if (string.IsNullOrEmpty(data)) return string.Empty;
 
             var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
-            //Subscription-Userinfo: upload=2375927198; download=12983696043; total=1099511627776
+            //Subscription-Userinfo: upload=2375927198; download=12983696043; total=1099511627776; expire=1862111613
+            //1024 / 1000 = 1.024
+            //1.024 * 1.024 * 1.024 =  1.073741824
             //Convert 1000 to 1024 by * 1.073741824
-            return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}";
+            DateTime expireTime;
+            var startTime  = new DateTime(1970, 1, 1, 0, 0, 0);
+            //Los Angeles time zone : UTC-7
+            //Get current Los Angeles time
+            TimeZoneInfo pstZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            DateTime pdtTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pstZone);
+            if (pdtTime.Day < info.ResetDay)
+                expireTime = pdtTime.AddDays(info.ResetDay - pdtTime.Day);//本月?号
+            else
+            {
+                var nextMonth = pdtTime.AddMonths(1);
+                //次月?号
+                expireTime = new DateTime(nextMonth.Year, nextMonth.Month, 1, nextMonth.Hour, nextMonth.Minute, nextMonth.Second).AddDays(info.ResetDay);
+            }
+
+            var timeStamp = Convert.ToInt64((expireTime.ToUniversalTime() - startTime).TotalSeconds);
+            return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={timeStamp}";
         }
 
         private static string GetDataFromUrl(string url)
