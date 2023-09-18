@@ -8,5 +8,6 @@ COPY . /app/publish/
 
 FROM base AS final
 COPY --from=publish /app/publish .
+ENV TZ=Asia/Shanghai
 #VOLUME /home/Web/logs:/app/publish/WebProjects/WebProjects/logs
 ENTRYPOINT ["dotnet", "WebProject.dll"]
