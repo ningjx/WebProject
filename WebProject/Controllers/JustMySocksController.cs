@@ -8,9 +8,18 @@ namespace WebProject.Controllers
     [Route("[controller]")]
     public class JustMySocksController : ControllerBase
     {
+        private readonly ILogger<JustMySocksController> _logger;
+
+        public JustMySocksController(ILogger<JustMySocksController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet(Name = "GetConfigByName")]
         public ActionResult GetConfig(string service, string id, bool useDomain = true)
         {
+            _logger.LogInformation($"获取配置，service:{service},id:{id},useDomain:{useDomain}");
+            return Ok();
             var contentType = "APPLICATION/octet-stream";
 
             var text = ConfigProvider.Instance.GetLastestConfig(service, id, useDomain);

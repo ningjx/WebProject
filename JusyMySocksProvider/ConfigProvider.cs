@@ -1,6 +1,9 @@
 ﻿using JustMySocksProvider.Enums;
 using JustMySocksProvider.Models;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Serilog;
+using Serilog.Core;
 using System.Data;
 using System.Net.WebSockets;
 using System.Text;
@@ -21,7 +24,10 @@ namespace JustMySocksProvider
             get
             {
                 if (configProvider == null)
+                {
                     configProvider = new ConfigProvider();
+                }
+                    
                 return configProvider;
             }
         }
