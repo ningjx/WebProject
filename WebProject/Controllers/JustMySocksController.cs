@@ -19,7 +19,7 @@ namespace WebProject.Controllers
         public ActionResult GetConfig(string service, string id, bool useDomain = true)
         {
             _logger.LogInformation($"获取配置，service:{service},id:{id},useDomain:{useDomain}");
-            return Ok();
+            //return Ok();
             var contentType = "APPLICATION/octet-stream";
 
             var text = ConfigProvider.Instance.GetLastestConfig(service, id, useDomain);
