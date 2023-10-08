@@ -284,6 +284,14 @@ rule-providers:
     path: ./ruleset/DisneyRules.list
     interval: 86400
 
+  customdirect:
+    type: http
+    behavior: classical
+    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomDirect.txt"
+    path: ./ruleset/DisneyRules.list
+    interval: 86400
+
+
 rules:
   - RULE-SET,netflix,Netflix
   - RULE-SET,youtube,YouTube
@@ -297,6 +305,7 @@ rules:
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
   - RULE-SET,direct,DIRECT
+  - RULE-SET,customdirect,DIRECT
   - RULE-SET,lancidr,DIRECT
   - RULE-SET,cncidr,DIRECT
   - GEOIP,LAN,DIRECT
