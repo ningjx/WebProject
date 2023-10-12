@@ -288,15 +288,22 @@ rule-providers:
     type: http
     behavior: classical
     url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomDirect.txt"
-    path: ./ruleset/DisneyRules.list
+    path: ./ruleset/CustomDirect.list
     interval: 86400
 
+  customproxy:
+    type: http
+    behavior: classical
+    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomProxy.txt"
+    path: ./ruleset/CustomProxy.list
+    interval: 86400
 
 rules:
   - RULE-SET,netflix,Netflix
   - RULE-SET,youtube,YouTube
   - RULE-SET,disney,Disney
   - RULE-SET,proxy,全局节点
+  - RULE-SET,customproxy,全局节点
   - RULE-SET,telegramcidr,全局节点
   - RULE-SET,streaming,其它国际流媒体
   
