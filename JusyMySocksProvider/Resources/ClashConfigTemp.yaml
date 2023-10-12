@@ -259,7 +259,7 @@ rule-providers:
   streaming:
     type: http
     behavior: classical
-    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/Streaming.txt"
+    url: "https://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/Streaming.txt"
     path: ./ruleset/Streaming.yaml
     interval: 86400
 
@@ -273,28 +273,28 @@ rule-providers:
   youtube:
     type: http
     behavior: classical
-    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/YouTubeRules.txt"
+    url: "https://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/YouTubeRules.txt"
     path: ./ruleset/YouTubeRules.list
     interval: 86400
 
   disney:
     type: http
     behavior: classical
-    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/DisneyRules.txt"
+    url: "https://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/DisneyRules.txt"
     path: ./ruleset/DisneyRules.list
     interval: 86400
 
   customdirect:
     type: http
     behavior: classical
-    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomDirect.txt"
+    url: "https://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomDirect.txt"
     path: ./ruleset/CustomDirect.list
     interval: 86400
-
+#git 加速 gh.con.sh ghproxy.com
   customproxy:
     type: http
     behavior: classical
-    url: "https://hub.gitmirror.com/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomProxy.txt"
+    url: "https://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomProxy.txt"
     path: ./ruleset/CustomProxy.list
     interval: 86400
 
