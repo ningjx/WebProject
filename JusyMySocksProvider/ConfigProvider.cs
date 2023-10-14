@@ -47,12 +47,18 @@ namespace JustMySocksProvider
             return ReplaceParamWith(configText, subInfos);
         }
 
-        public string GetServiceInfo(string service, string id)
+        public string GetServiceStatus(string service, string id)
+        {
+            var info = GetServiceInfo(service, id);
+            return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}";
+        }
+
+        public ServiceInfo GetServiceInfo(string service, string id)
         {
             var link = infoLink.Replace("{service}", service).Replace("{id}", id);
             //var data = "{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
             var data = GetDataFromUrl(link);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
-            if (string.IsNullOrEmpty(data)) return string.Empty;
+            if (string.IsNullOrEmpty(data)) return new ServiceInfo();
 
             var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
             //Subscription-Userinfo: upload=2375927198; download=12983696043; total=1099511627776; expire=1862111613
@@ -82,8 +88,8 @@ namespace JustMySocksProvider
 
             var utcTime = expireTime - laZone.BaseUtcOffset;//LA time to UTC time
             var timeStamp = Convert.ToInt64((utcTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
-
-            return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={timeStamp}";
+            info.TimeStamp = timeStamp;
+            return info;
         }
 
         private static string GetDataFromUrl(string url)
