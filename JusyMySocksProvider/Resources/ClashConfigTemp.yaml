@@ -107,7 +107,7 @@ proxy-groups:
   - name: 全局节点
     type: select
     proxies:
-      - 自动切换最快节点
+      - 最快节点
       - 美国3
       - 美国1
       - 美国2
@@ -115,25 +115,13 @@ proxy-groups:
       - 荷兰
       - 美国0.1倍流量
       - DIRECT
-
-  - name: 自动切换最快节点
-    type: url-test
-    proxies:
-      - 美国3
-      - 美国1
-      - 美国2
-      - 日本
-      - 荷兰
-      - 美国0.1倍流量
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    
+ 
   - name: YouTube
     type: select
     proxies:
       - 日本
       - 美国0.1倍流量
-      - 自动切换最快节点
+      - 最快节点
       - 美国1
       - 美国2
       - 美国3
@@ -147,14 +135,14 @@ proxy-groups:
       - 美国2
       - 美国3
       - 美国0.1倍流量
-      - 自动切换最快节点
+      - 最快节点
       - 荷兰
 
   - name: Disney
     type: select
     proxies:
       - 美国0.1倍流量
-      - 自动切换最快节点
+      - 最快节点
       - 美国1
       - 美国2
       - 美国3
@@ -166,7 +154,7 @@ proxy-groups:
     proxies:
       - 日本
       - 美国0.1倍流量
-      - 自动切换最快节点
+      - 最快节点
       - 美国1
       - 美国2
       - 美国3
@@ -178,11 +166,23 @@ proxy-groups:
       - DIRECT
       - 日本
       - 美国0.1倍流量
-      - 自动切换最快节点
+      - 最快节点
       - 美国1
       - 美国2
       - 美国3
       - 荷兰
+
+  - name: 最快节点
+    type: url-test
+    proxies:
+      - 美国3
+      - 美国1
+      - 美国2
+      - 日本
+      - 荷兰
+      - 美国0.1倍流量
+    url: http://www.gstatic.com/generate_204
+    interval: 300
 
 rule-providers:
   icloud:
@@ -331,4 +331,4 @@ rules:
   - GEOIP,LAN,DIRECT
   - GEOIP,CN,DIRECT
   #- GEOIP,CN,DIRECT,no-resolve 禁止对其进行DNS解析
-  - MATCH,全局节点
+  - MATCH,未知IP
