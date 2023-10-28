@@ -114,6 +114,7 @@ proxy-groups:
       - 日本
       - 荷兰
       - 美国0.1倍流量
+      - DIRECT
 
   - name: 自动切换最快节点
     type: url-test
@@ -163,6 +164,18 @@ proxy-groups:
   - name: 其它国际流媒体
     type: select
     proxies:
+      - 日本
+      - 美国0.1倍流量
+      - 自动切换最快节点
+      - 美国1
+      - 美国2
+      - 美国3
+      - 荷兰
+
+  - name: 未知IP
+    type: select
+    proxies:
+      - DIRECT
       - 日本
       - 美国0.1倍流量
       - 自动切换最快节点
