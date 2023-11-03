@@ -15,7 +15,7 @@ namespace JustMySocksProvider
     public class ConfigProvider
     {
         private const string sbLink = "https://jmssub.net/members/getsub.php?service={service}&id={id}";
-        private const string infoLink = "https://justmysocks5.net/members/getbwcounter.php?service={service}&id={id}";
+        private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={service}&id={id}";
         private static Regex DomainRegex = new Regex(@"(?<=@)(.+)(?=\:)");
         private static Regex SSInfoRegex = new Regex(@"(?<=ss://)(.+)(?=#)");
 
