@@ -21,7 +21,7 @@ namespace WebProject.Controllers
         [Route("/JustMySocks")]
         public ActionResult GetConfig([FromQuery] string service, [FromQuery] string id, [FromQuery] bool useDomain = true)
         {
-            _logger.LogInformation($"GetConfig，service:{service},id:{id},useDomain:{useDomain}");
+            _logger.LogInformation($"获取服务器配置，service:{service},id:{id},useDomain:{useDomain},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
 
             if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                 return BadRequest();
@@ -40,9 +40,10 @@ namespace WebProject.Controllers
         [Route("/JustMySocks/GetServiceStatus")]
         public ActionResult GetServiceStatus([FromQuery] string service, [FromQuery] string id)
         {
-            _logger.LogInformation($"GetServiceStatus，service:{service},id:{id}");
+            //var test = HttpContext.Request.Headers["X-Real-Ip"].FirstOrDefault();
+            _logger.LogInformation($"获取剩余流量，service:{service},id:{id},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
 
-            if(string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                 return BadRequest();
 
             var info = ConfigProvider.Instance.GetServiceInfo(service, id);
