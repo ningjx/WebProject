@@ -312,11 +312,12 @@ rule-providers:
     interval: 86400
 
 rules:
+  - RULE-SET,customproxy,全局节点
+  - RULE-SET,customdirect,DIRECT
   - RULE-SET,netflix,Netflix
   - RULE-SET,youtube,YouTube
   - RULE-SET,disney,Disney
   - RULE-SET,proxy,全局节点
-  - RULE-SET,customproxy,全局节点
   - RULE-SET,telegramcidr,全局节点
   - RULE-SET,streaming,其它国际流媒体
   
@@ -325,7 +326,6 @@ rules:
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
   - RULE-SET,direct,DIRECT
-  - RULE-SET,customdirect,DIRECT
   - RULE-SET,lancidr,DIRECT
   - RULE-SET,cncidr,DIRECT
   - GEOIP,LAN,DIRECT
