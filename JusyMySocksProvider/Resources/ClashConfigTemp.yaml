@@ -185,6 +185,7 @@ proxy-groups:
     interval: 300
 
 rule-providers:
+#规则来自https://github.com/Loyalsoldier/clash-rules
   icloud:
     type: http
     behavior: domain
