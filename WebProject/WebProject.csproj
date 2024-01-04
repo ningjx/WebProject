@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JusyMySocksProvider\JustMySocksProvider.csproj" />
+    <ProjectReference Include="..\JusyMySocksProvider\JustMySocksService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

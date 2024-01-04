@@ -1,3 +1,5 @@
+using JustMySocksService.Interfaces;
+using JustMySocksService.Providers;
 using Serilog;
 using System.Text;
 
@@ -13,6 +15,7 @@ namespace WebProject
             builder.Services.AddRazorPages();
             builder.Services.AddControllers();
             builder.Services.AddSerilog();
+            builder.Services.AddSingleton<IConfigService,ConfigService>();
 
             var app = builder.Build();
 

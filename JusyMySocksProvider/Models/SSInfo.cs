@@ -1,4 +1,4 @@
-﻿namespace JustMySocksProvider.Models
+﻿namespace JustMySocksService.Models
 {
     public class SSInfo
     {

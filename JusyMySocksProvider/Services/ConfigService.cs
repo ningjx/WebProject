@@ -1,40 +1,28 @@
-﻿using JustMySocksProvider.Enums;
-using JustMySocksProvider.Models;
+﻿using JustMySocksService.Enums;
+using JustMySocksService.Interfaces;
+using JustMySocksService.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Serilog;
-using Serilog.Core;
-using System.Data;
-using System.Net.WebSockets;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace JustMySocksProvider
+namespace JustMySocksService.Providers
 {
-    public class ConfigProvider
+    public class ConfigService : IConfigService
     {
         private const string sbLink = "https://jmssub.net/members/getsub.php?service={service}&id={id}";
         private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={service}&id={id}";
+        private const string configurl = "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/ClashConfigTemp.yaml";
         private static Regex DomainRegex = new Regex(@"(?<=@)(.+)(?=\:)");
         private static Regex SSInfoRegex = new Regex(@"(?<=ss://)(.+)(?=#)");
+        private readonly ILogger _logger;
 
-        public static ConfigProvider Instance
+        public ConfigService(ILogger<ConfigService> logger)
         {
-            get
-            {
-                if (configProvider == null)
-                {
-                    configProvider = new ConfigProvider();
-                }
-                    
-                return configProvider;
-            }
+
+            _logger = logger;
         }
-
-        private static ConfigProvider configProvider = null;
-
-        private ConfigProvider() { }
 
         public string GetLastestConfig(string service, string id, bool useDomain = true)
         {
@@ -42,7 +30,17 @@ namespace JustMySocksProvider
             if (useDomain)
                 link += "&usedomains=1";
 
-            var configText = Encoding.UTF8.GetString(ConfigResource.ClashConfigTemp);
+            var configText = string.Empty;
+            try
+            {
+                configText = GetDataFromUrl(configurl);
+            }
+            catch (Exception ex)
+            {
+                configText = Encoding.UTF8.GetString(ConfigResource.ClashConfigTemp);
+                _logger.LogError(new EventId(), ex, ex.Message);
+            }
+
             var subInfos = GetSubInfos(link);
             return ReplaceParamWith(configText, subInfos);
         }
@@ -50,6 +48,7 @@ namespace JustMySocksProvider
         public string GetServiceStatus(string service, string id)
         {
             var info = GetServiceInfo(service, id);
+            //将数据从1000转换1024
             return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}";
         }
 
@@ -58,7 +57,7 @@ namespace JustMySocksProvider
             var link = infoLink.Replace("{service}", service).Replace("{id}", id);
             //var data = "{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
             var data = GetDataFromUrl(link);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
-            if (string.IsNullOrEmpty(data)) return new ServiceInfo();
+            if (string.IsNullOrEmpty(data)) throw new Exception($"无法从{link}获取数据");
 
             var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
             //Subscription-Userinfo: upload=2375927198; download=12983696043; total=1099511627776; expire=1862111613
@@ -92,13 +91,14 @@ namespace JustMySocksProvider
             return info;
         }
 
+
         private static string GetDataFromUrl(string url)
         {
             HttpClient client = new HttpClient();
             var data = client.GetStringAsync(url).Result;
 
             if (string.IsNullOrEmpty(data))
-                return string.Empty;
+                throw new Exception($"无法从{url}获取数据");
 
             return data;
         }
@@ -111,7 +111,7 @@ namespace JustMySocksProvider
             //return Encoding.Default.GetString(bytes);
         }
 
-        private static List<SubInfo> GetSubInfos(string url)
+        private List<SubInfo> GetSubInfos(string url)
         {
             var result = new List<SubInfo>();
 
@@ -202,6 +202,5 @@ namespace JustMySocksProvider
             }
             return builder.ToString();
         }
-
     }
 }

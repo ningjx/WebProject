@@ -1,6 +1,6 @@
-﻿using JustMySocksProvider.Enums;
+﻿using JustMySocksService.Enums;
 
-namespace JustMySocksProvider.Models
+namespace JustMySocksService.Models
 {
     public class SubInfo
     {

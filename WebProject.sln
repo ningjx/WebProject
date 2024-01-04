@@ -8,9 +8,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebProject", "WebProject\We
 		{4B918BBD-4721-4F25-B648-761CE06CC576} = {4B918BBD-4721-4F25-B648-761CE06CC576}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustMySocksProvider", "JusyMySocksProvider\JustMySocksProvider.csproj", "{4B918BBD-4721-4F25-B648-761CE06CC576}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustMySocksService", "JusyMySocksProvider\JustMySocksService.csproj", "{4B918BBD-4721-4F25-B648-761CE06CC576}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MStest", "MStest\MStest.csproj", "{E6081ED8-79F7-4114-90F4-E5CF110D85B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MStest", "MStest\MStest.csproj", "{E6081ED8-79F7-4114-90F4-E5CF110D85B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

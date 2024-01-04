@@ -138,6 +138,17 @@ proxy-groups:
       - 最快节点
       - 荷兰
 
+  - name: Amazon
+    type: select
+    proxies:
+      - 日本
+      - 美国1
+      - 美国2
+      - 美国3
+      - 美国0.1倍流量
+      - 最快节点
+      - 荷兰
+
   - name: Disney
     type: select
     proxies:
@@ -270,6 +281,8 @@ rule-providers:
     path: ./ruleset/applications.yaml
     interval: 86400
 
+#规则来自https://github.com/ningjx/Clash-Rules
+#git 加速 gh.con.sh ghproxy.com
   streaming:
     type: http
     behavior: classical
@@ -281,21 +294,28 @@ rule-providers:
     type: http
     behavior: classical
     url: "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/Netflix.txt"
-    path: ./ruleset/NetflixRules.list
+    path: ./ruleset/Netflix.list
+    interval: 86400
+
+  amazon:
+    type: http
+    behavior: classical
+    url: "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/Amazon.txt"
+    path: ./ruleset/Amazon.list
     interval: 86400
 
   youtube:
     type: http
     behavior: classical
-    url: "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/YouTubeRules.txt"
-    path: ./ruleset/YouTubeRules.list
+    url: "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/YouTube.txt"
+    path: ./ruleset/YouTube.list
     interval: 86400
 
   disney:
     type: http
     behavior: classical
-    url: "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/DisneyRules.txt"
-    path: ./ruleset/DisneyRules.list
+    url: "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/Disney.txt"
+    path: ./ruleset/Disney.list
     interval: 86400
 
   customdirect:
@@ -304,7 +324,7 @@ rule-providers:
     url: "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/CustomDirect.txt"
     path: ./ruleset/CustomDirect.list
     interval: 86400
-#git 加速 gh.con.sh ghproxy.com
+
   customproxy:
     type: http
     behavior: classical
@@ -317,10 +337,11 @@ rules:
   - RULE-SET,customdirect,DIRECT
   - RULE-SET,netflix,Netflix
   - RULE-SET,youtube,YouTube
+  - RULE-SET,amazon,Amazon
   - RULE-SET,disney,Disney
+  - RULE-SET,streaming,其它国际流媒体
   - RULE-SET,proxy,全局节点
   - RULE-SET,telegramcidr,全局节点
-  - RULE-SET,streaming,其它国际流媒体
   
   - RULE-SET,applications,DIRECT
   - RULE-SET,private,DIRECT

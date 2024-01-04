@@ -1,4 +1,4 @@
-﻿namespace JustMySocksProvider.Enums
+﻿namespace JustMySocksService.Enums
 {
     public enum SubType
     {

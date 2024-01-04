@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JusyMySocksProvider\JustMySocksProvider.csproj" />
+    <ProjectReference Include="..\JusyMySocksProvider\JustMySocksService.csproj" />
     <ProjectReference Include="..\WebProject\WebProject.csproj" />
   </ItemGroup>
 

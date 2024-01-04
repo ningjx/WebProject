@@ -1,4 +1,4 @@
-﻿using JustMySocksProvider;
+﻿using JustMySocksService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -10,10 +10,12 @@ namespace WebProject.Controllers
     public class JustMySocksController : Controller
     {
         private readonly ILogger<JustMySocksController> _logger;
+        private readonly IConfigService _configService;
 
-        public JustMySocksController(ILogger<JustMySocksController> logger)
+        public JustMySocksController(ILogger<JustMySocksController> logger, IConfigService configService)
         {
             _logger = logger;
+            _configService = configService;
         }
 
         [HttpGet()]
@@ -21,34 +23,48 @@ namespace WebProject.Controllers
         [Route("/JustMySocks")]
         public ActionResult GetConfig([FromQuery] string service, [FromQuery] string id, [FromQuery] bool useDomain = true)
         {
-            _logger.LogInformation($"获取服务器配置，service:{service},id:{id},useDomain:{useDomain},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
+            try
+            {
+                _logger.LogInformation($"获取服务器配置，service:{service},id:{id},useDomain:{useDomain},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
 
-            if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
+                if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
+                    return BadRequest();
+
+                var config = _configService.GetLastestConfig(service, id, useDomain);
+                var info = _configService.GetServiceStatus(service, id);
+
+                HttpContext.Response.Headers.Add("Subscription-Userinfo", info);
+
+                return File(Encoding.UTF8.GetBytes(config), "APPLICATION/octet-stream", "ClashConfig.yaml");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(500, ex, ex.Message);
                 return BadRequest();
-
-            var contentType = "APPLICATION/octet-stream";
-
-            var text = ConfigProvider.Instance.GetLastestConfig(service, id, useDomain);
-            var info = ConfigProvider.Instance.GetServiceStatus(service,id);
-
-            HttpContext.Response.Headers.Add("Subscription-Userinfo", info);
-
-            return File(Encoding.UTF8.GetBytes(text), contentType, "ClashConfig.yaml");
+            }
         }
 
         [HttpGet]
         [Route("/JustMySocks/GetServiceStatus")]
         public ActionResult GetServiceStatus([FromQuery] string service, [FromQuery] string id)
         {
-            //var test = HttpContext.Request.Headers["X-Real-Ip"].FirstOrDefault();
-            _logger.LogInformation($"获取剩余流量，service:{service},id:{id},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
+            try
+            {
+                //var test = HttpContext.Request.Headers["X-Real-Ip"].FirstOrDefault();
+                _logger.LogInformation($"获取剩余流量，service:{service},id:{id},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
 
-            if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
+                if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
+                    return BadRequest();
+
+                var info = _configService.GetServiceInfo(service, id);
+                HttpContext.Response.Headers.Add("Subscription-Userinfo", $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}");
+                return Ok(JsonConvert.SerializeObject(info));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(500, ex, ex.Message);
                 return BadRequest();
-
-            var info = ConfigProvider.Instance.GetServiceInfo(service, id);
-            HttpContext.Response.Headers.Add("Subscription-Userinfo", $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}");
-            return Ok(JsonConvert.SerializeObject(info));
+            }
         }
     }
 }
