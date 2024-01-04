@@ -1,4 +1,4 @@
-﻿using JustMySocksService.Providers;
+﻿using JustMySocksService.Services;
 
 namespace JustMySocksProvider.Tests
 {

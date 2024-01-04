@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace JustMySocksService.Providers
+namespace JustMySocksService.Services
 {
     public class ConfigService : IConfigService
     {

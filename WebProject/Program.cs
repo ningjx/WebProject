@@ -1,5 +1,5 @@
 using JustMySocksService.Interfaces;
-using JustMySocksService.Providers;
+using JustMySocksService.Services;
 using Serilog;
 using System.Text;
 
