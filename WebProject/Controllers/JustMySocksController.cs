@@ -31,8 +31,8 @@ namespace WebProject.Controllers
                 if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                     return BadRequest();
 
-                var info = _configService.GetServiceInfo(service, id);
-                var config = _configService.GetLastestConfig(service, id, useDomain);
+                var info = _configService.GetServiceInfoAsync(service, id);
+                var config = _configService.GetLastestConfigAsync(service, id, useDomain);
                 info.Start();
                 config.Start();
 
@@ -58,7 +58,7 @@ namespace WebProject.Controllers
                 if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                     return BadRequest();
 
-                var info = _configService.GetServiceInfo(service, id);
+                var info = _configService.GetServiceInfoAsync(service, id);
                 info.Start();
                 HttpContext.Response.Headers.Add("Subscription-Userinfo", info.Result);
                 return Ok(JsonConvert.SerializeObject(info));
