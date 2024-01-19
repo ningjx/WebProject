@@ -22,7 +22,7 @@ namespace WebProject.Controllers
         [HttpGet()]
         //下面的标签不能动，很多地方用到了这个链接
         [Route("/JustMySocks")]
-        public ActionResult GetConfig([FromQuery] string service, [FromQuery] string id, [FromQuery] bool useDomain = true)
+        public async Task<ActionResult> GetConfig([FromQuery] string service, [FromQuery] string id, [FromQuery] bool useDomain = true)
         {
             try
             {
@@ -33,8 +33,8 @@ namespace WebProject.Controllers
 
                 var info = _configService.GetServiceInfoAsync(service, id);
                 var config = _configService.GetLastestConfigAsync(service, id, useDomain);
-                info.Start();
-                config.Start();
+
+                await Task.WhenAll(info, config);
 
                 HttpContext.Response.Headers.Add("Subscription-Userinfo", info.Result);
                 return File(Encoding.UTF8.GetBytes(config.Result), "APPLICATION/octet-stream", "ClashConfig.yaml");
@@ -48,19 +48,17 @@ namespace WebProject.Controllers
 
         [HttpGet]
         [Route("/JustMySocks/GetServiceStatus")]
-        public ActionResult GetServiceStatus([FromQuery] string service, [FromQuery] string id)
+        public async Task<ActionResult> GetServiceStatus([FromQuery] string service, [FromQuery] string id)
         {
             try
             {
-                //var test = HttpContext.Request.Headers["X-Real-Ip"].FirstOrDefault();
                 _logger.LogInformation($"获取剩余流量，service:{service},id:{id},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
 
                 if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                     return BadRequest();
 
-                var info = _configService.GetServiceInfoAsync(service, id);
-                info.Start();
-                HttpContext.Response.Headers.Add("Subscription-Userinfo", info.Result);
+                var info = await _configService.GetServiceInfoAsync(service, id);
+                HttpContext.Response.Headers.Add("Subscription-Userinfo", info);
                 return Ok(JsonConvert.SerializeObject(info));
             }
             catch (Exception ex)

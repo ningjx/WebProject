@@ -12,7 +12,7 @@ namespace JustMySocksService.Services
     public class ConfigService : IConfigService
     {
         private const string sbLink = "https://jmssub.net/members/getsub.php?service={service}&id={id}";
-        private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={service}&id={id}";
+        private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={0}&id={1}&usedomains={2}";
         private const string configurl = "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/ClashConfigTemp.yaml";
         private static Regex DomainRegex = new Regex(@"(?<=@)(.+)(?=\:)");
         private static Regex SSInfoRegex = new Regex(@"(?<=ss://)(.+)(?=#)");
@@ -20,52 +20,37 @@ namespace JustMySocksService.Services
 
         public ConfigService(ILogger<ConfigService> logger)
         {
-
             _logger = logger;
         }
 
-        public Task<string> GetLastestConfigAsync(string service, string id, bool useDomain = true)
+        public async Task<string> GetLastestConfigAsync(string service, string id, bool useDomain = true)
         {
-            return new Task<string>(() =>
-            {
-                var link = sbLink.Replace("{service}", service).Replace("{id}", id);
-                if (useDomain)
-                    link += "&usedomains=1";
+            var link = string.Format(sbLink, service, id, useDomain ? 1 : 0);
 
-                var configText = string.Empty;
-                try
-                {
-                    configText = GetDataFromUrl(configurl);
-                }
-                catch (Exception ex)
-                {
-                    configText = Encoding.UTF8.GetString(ConfigResource.ClashConfigTemp);
-                    _logger.LogError(new EventId(), ex, ex.Message);
-                }
+            var configText = GetDataFromUrlAsync(configurl);
+            var subInfos = GetSubInfosAsync(link);
 
-                var subInfos = GetSubInfos(link);
-                return ReplaceParamWith(configText, subInfos);
-            }); 
+            await Task.WhenAll(configText, subInfos);
+
+            return ReplaceParamWith(configText.Result, subInfos.Result);
         }
 
-        public Task<string> GetServiceInfoAsync(string service, string id, bool convertValue = false)
+        public async Task<string> GetServiceInfoAsync(string service, string id, bool convertValue = false)
         {
-            return new Task<string>(() =>
-            {
-                var info = GetServiceInfo(service, id);
-                //将数据从1000转换1024
-                if (convertValue)
-                    return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}";
-                else
-                    return $"upload=0; download={info.Used}; total={info.Limit}; expire={info.TimeStamp}";
-            });
+            var info = await GetServiceInfo(service, id);
+            //将数据从1000转换1024
+            if (convertValue)
+                return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}";
+            else
+                return $"upload=0; download={info.Used}; total={info.Limit}; expire={info.TimeStamp}";
         }
 
-        private ServiceInfo GetServiceInfo(string service, string id)
+
+        private async Task<ServiceInfo> GetServiceInfo(string service, string id)
         {
             var link = infoLink.Replace("{service}", service).Replace("{id}", id);
             //var data = "{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
-            var data = GetDataFromUrl(link);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
+            var data = await GetDataFromUrlAsync(link);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
             if (string.IsNullOrEmpty(data)) throw new Exception($"无法从{link}获取数据");
 
             var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
@@ -100,11 +85,10 @@ namespace JustMySocksService.Services
             return info;
         }
 
-
-        private static string GetDataFromUrl(string url)
+        private async Task<string> GetDataFromUrlAsync(string url)
         {
             HttpClient client = new HttpClient();
-            var data = client.GetStringAsync(url).Result;
+            var data = await client.GetStringAsync(url);
 
             if (string.IsNullOrEmpty(data))
                 throw new Exception($"无法从{url}获取数据");
@@ -112,7 +96,7 @@ namespace JustMySocksService.Services
             return data;
         }
 
-        private static string Base64Decode(string data)
+        private string Base64Decode(string data)
         {
             data = data.Replace("\n", "");
             return Base64UrlEncoder.Encoder.Decode(data);
@@ -120,11 +104,11 @@ namespace JustMySocksService.Services
             //return Encoding.Default.GetString(bytes);
         }
 
-        private List<SubInfo> GetSubInfos(string url)
+        private async Task<List<SubInfo>> GetSubInfosAsync(string url)
         {
             var result = new List<SubInfo>();
 
-            var data = GetDataFromUrl(url);
+            var data = await GetDataFromUrlAsync(url);
             if (string.IsNullOrEmpty(data)) return result;
 
             data = Base64Decode(data);
