@@ -11,8 +11,8 @@ namespace JustMySocksService.Services
 {
     public class ConfigService : IConfigService
     {
-        private const string sbLink = "https://jmssub.net/members/getsub.php?service={service}&id={id}";
-        private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={0}&id={1}&usedomains={2}";
+        private const string sbLink = "https://jmssub.net/members/getsub.php?service={0}&id={1}&usedomains={2}";
+        private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={0}&id={1}";
         private const string configurl = "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/ClashConfigTemp.yaml";
         private static Regex DomainRegex = new Regex(@"(?<=@)(.+)(?=\:)");
         private static Regex SSInfoRegex = new Regex(@"(?<=ss://)(.+)(?=#)");
@@ -48,7 +48,7 @@ namespace JustMySocksService.Services
 
         private async Task<ServiceInfo> GetServiceInfo(string service, string id)
         {
-            var link = infoLink.Replace("{service}", service).Replace("{id}", id);
+            var link = string.Format(infoLink, service, id);
             //var data = "{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
             var data = await GetDataFromUrlAsync(link);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
             if (string.IsNullOrEmpty(data)) throw new Exception($"无法从{link}获取数据");
