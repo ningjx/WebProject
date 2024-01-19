@@ -1,6 +1,7 @@
 ﻿using JustMySocksService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Text;
 
 namespace WebProject.Controllers
@@ -30,12 +31,13 @@ namespace WebProject.Controllers
                 if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                     return BadRequest();
 
+                var info = _configService.GetServiceInfo(service, id);
                 var config = _configService.GetLastestConfig(service, id, useDomain);
-                var info = _configService.GetServiceStatus(service, id);
+                info.Start();
+                config.Start();
 
-                HttpContext.Response.Headers.Add("Subscription-Userinfo", info);
-
-                return File(Encoding.UTF8.GetBytes(config), "APPLICATION/octet-stream", "ClashConfig.yaml");
+                HttpContext.Response.Headers.Add("Subscription-Userinfo", info.Result);
+                return File(Encoding.UTF8.GetBytes(config.Result), "APPLICATION/octet-stream", "ClashConfig.yaml");
             }
             catch (Exception ex)
             {
@@ -57,7 +59,8 @@ namespace WebProject.Controllers
                     return BadRequest();
 
                 var info = _configService.GetServiceInfo(service, id);
-                HttpContext.Response.Headers.Add("Subscription-Userinfo", $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}");
+                info.Start();
+                HttpContext.Response.Headers.Add("Subscription-Userinfo", info.Result);
                 return Ok(JsonConvert.SerializeObject(info));
             }
             catch (Exception ex)

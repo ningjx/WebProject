@@ -24,35 +24,44 @@ namespace JustMySocksService.Services
             _logger = logger;
         }
 
-        public string GetLastestConfig(string service, string id, bool useDomain = true)
+        public Task<string> GetLastestConfig(string service, string id, bool useDomain = true)
         {
-            var link = sbLink.Replace("{service}", service).Replace("{id}", id);
-            if (useDomain)
-                link += "&usedomains=1";
-
-            var configText = string.Empty;
-            try
+            return new Task<string>(() =>
             {
-                configText = GetDataFromUrl(configurl);
-            }
-            catch (Exception ex)
-            {
-                configText = Encoding.UTF8.GetString(ConfigResource.ClashConfigTemp);
-                _logger.LogError(new EventId(), ex, ex.Message);
-            }
+                var link = sbLink.Replace("{service}", service).Replace("{id}", id);
+                if (useDomain)
+                    link += "&usedomains=1";
 
-            var subInfos = GetSubInfos(link);
-            return ReplaceParamWith(configText, subInfos);
+                var configText = string.Empty;
+                try
+                {
+                    configText = GetDataFromUrl(configurl);
+                }
+                catch (Exception ex)
+                {
+                    configText = Encoding.UTF8.GetString(ConfigResource.ClashConfigTemp);
+                    _logger.LogError(new EventId(), ex, ex.Message);
+                }
+
+                var subInfos = GetSubInfos(link);
+                return ReplaceParamWith(configText, subInfos);
+            }); 
         }
 
-        public string GetServiceStatus(string service, string id)
+        public Task<string> GetServiceInfo(string service, string id, bool convertValue = false)
         {
-            var info = GetServiceInfo(service, id);
-            //将数据从1000转换1024
-            return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}";
+            return new Task<string>(() =>
+            {
+                var info = GetServiceInfo(service, id);
+                //将数据从1000转换1024
+                if (convertValue)
+                    return $"upload=0; download={info.Used * 1.073741824d}; total={info.Limit * 1.073741824d}; expire={info.TimeStamp}";
+                else
+                    return $"upload=0; download={info.Used}; total={info.Limit}; expire={info.TimeStamp}";
+            });
         }
 
-        public ServiceInfo GetServiceInfo(string service, string id)
+        private ServiceInfo GetServiceInfo(string service, string id)
         {
             var link = infoLink.Replace("{service}", service).Replace("{id}", id);
             //var data = "{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";

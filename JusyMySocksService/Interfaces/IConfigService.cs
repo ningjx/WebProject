@@ -10,10 +10,8 @@ namespace JustMySocksService.Interfaces
 {
     public interface IConfigService
     {
-        public string GetLastestConfig(string service, string id, bool useDomain = true);
+        public Task<string> GetLastestConfig(string service, string id, bool useDomain = true);
 
-        public string GetServiceStatus(string service, string id);
-
-        public ServiceInfo GetServiceInfo(string service, string id);
+        public Task<string> GetServiceInfo(string service, string id, bool convertValue = false);
     }
 }
