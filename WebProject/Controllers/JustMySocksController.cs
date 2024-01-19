@@ -22,7 +22,7 @@ namespace WebProject.Controllers
         [HttpGet()]
         //下面的标签不能动，很多地方用到了这个链接
         [Route("/JustMySocks")]
-        public async Task<ActionResult> GetConfig([FromQuery] string service, [FromQuery] string id, [FromQuery] bool useDomain = true)
+        public async Task<ActionResult> GetConfigAsync([FromQuery] string service, [FromQuery] string id, [FromQuery] bool useDomain = true)
         {
             try
             {
@@ -41,14 +41,14 @@ namespace WebProject.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(500, ex, ex.Message);
+                _logger.LogError(500, ex, "JustMySocks接口异常");
                 return BadRequest();
             }
         }
 
         [HttpGet]
         [Route("/JustMySocks/GetServiceStatus")]
-        public async Task<ActionResult> GetServiceStatus([FromQuery] string service, [FromQuery] string id)
+        public async Task<ActionResult> GetServiceStatusAsync([FromQuery] string service, [FromQuery] string id)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace WebProject.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(500, ex, ex.Message);
+                _logger.LogError(500, ex, "GetServiceStatus接口异常");
                 return BadRequest();
             }
         }
