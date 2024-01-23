@@ -33,7 +33,7 @@ namespace JustMySocksService.Services
 
             await Task.WhenAll(proxies, configText);
 
-            return ReplaceParamWith(configText.Result, proxies.Result);
+            return BuildConfig(configText.Result, proxies.Result);
         }
 
         private async Task<List<BaseProxy>> GetProxiesFromUrlAsync(string url)
@@ -77,7 +77,7 @@ namespace JustMySocksService.Services
             return result;
         }
 
-        private string ReplaceParamWith(string text, List<BaseProxy> proxies)
+        private string BuildConfig(string text, List<BaseProxy> proxies)
         {
             var configBuilder = new StringBuilder();
             configBuilder.Append(text);

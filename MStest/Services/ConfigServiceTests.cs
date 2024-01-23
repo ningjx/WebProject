@@ -1,11 +1,13 @@
-﻿using JustMySocksService.Helpers;
-using JustMySocksService.Models;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JustMySocksService.Services;
-using Newtonsoft.Json;
-using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using YamlDotNet.Serialization;
 
-namespace JustMySocksProvider.Tests
+namespace JustMySocksService.Services.Tests
 {
     [TestClass()]
     public class ConfigServiceTests

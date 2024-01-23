@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Protocol;
+﻿using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace JustMySocksService.Models
 {
@@ -8,27 +9,37 @@ namespace JustMySocksService.Models
         {
             base.cipher = "chacha20-poly1305";
         }
+        [YamlIgnore]
         public string ps { get => name; set { name = value; } }
+        [YamlIgnore]
         public string id { get => uuid; set { uuid = value; } }
+        [YamlIgnore]
         public int aid { get => alterId; set { alterId = value; } }
+        [YamlIgnore]
         public string net
         {
             get { return udp.ToString(); }
             set { udp = value != "tcp"; }
         }
+        [YamlIgnore]
         public string sni;
+        [YamlIgnore]
         public string add { get => server; set { server = value; } }
 
-        public new string tls
+        [YamlIgnore]
+        [JsonProperty("tls")]
+        public string Tls_json
         {
-            get { return base.tls.ToString(); }
-            set { base.tls = value == "tls"; }
+            get { return tls.ToString(); }
+            set { tls = value == "tls"; }
         }
 
-        public new bool skipCertVerify
+        [YamlIgnore]
+        [JsonProperty("skipCertVerify")]
+        public bool SkipCertVerify_json
         {
-            get => base.skipCertVerify;
-            set { base.skipCertVerify = value; }
+            get => skipCertVerify;
+            set { skipCertVerify = value; }
         }
     }
 }

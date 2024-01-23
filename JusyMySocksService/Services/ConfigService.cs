@@ -36,7 +36,7 @@ namespace JustMySocksService.Services
 
             await Task.WhenAll(configText, subInfos);
 
-            return ReplaceParamWith(configText.Result, subInfos.Result);
+            return BuildConfig(configText.Result, subInfos.Result);
         }
 
         public async Task<string> GetServiceInfoAsync(string service, string id, bool convertValue = false)
@@ -126,25 +126,14 @@ namespace JustMySocksService.Services
 
                     var vmessProxyJMS = JsonConvert.DeserializeObject<VmessProxyJMS>(v2rayStr);
 
-                    var vmessProxy = new VmessProxy()
-                    {
-                        server = vmessProxyJMS.add,
-                        port = vmessProxyJMS.port,
-                        uuid = vmessProxyJMS.id,
-                        alterId = vmessProxyJMS.aid,
-                        cipher = vmessProxyJMS.cipher,
-                        udp = vmessProxyJMS.udp,
-                        tls = Convert.ToBoolean(vmessProxyJMS.tls),
-                        skipCertVerify = vmessProxyJMS.skipCertVerify
-                    };
-                    result.Add(vmessProxy);
+                    result.Add(vmessProxyJMS);
                 }
             }
 
             return result;
         }
 
-        private string ReplaceParamWith(string text, List<BaseProxy> proxies)
+        private string BuildConfig(string text, List<BaseProxy> proxies)
         {
             var configBuilder = new StringBuilder();
             configBuilder.Append(text);
@@ -157,6 +146,9 @@ namespace JustMySocksService.Services
 
             foreach (var proxy in proxies)
             {
+                if (proxy == null)
+                    continue;
+
                 proxy.name = proxyNameStack.Pop();
                 proxyList += "\n  - ";
                 proxyList += $"{yamlSerializer.Serialize(proxy)}";
