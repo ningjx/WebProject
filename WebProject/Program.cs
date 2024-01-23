@@ -16,6 +16,7 @@ namespace WebProject
             builder.Services.AddControllers();
             builder.Services.AddSerilog();
             builder.Services.AddSingleton<IConfigService,ConfigService>();
+            builder.Services.AddSingleton<ISubscribeConverterService, SubscribeConverterService>();
 
             var app = builder.Build();
 

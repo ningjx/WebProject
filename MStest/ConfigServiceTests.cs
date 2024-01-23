@@ -1,4 +1,5 @@
-﻿using JustMySocksService.Models;
+﻿using JustMySocksService.Helpers;
+using JustMySocksService.Models;
 using JustMySocksService.Services;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;

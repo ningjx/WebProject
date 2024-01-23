@@ -12,11 +12,14 @@ namespace WebProject.Controllers
     {
         private readonly ILogger<JustMySocksController> _logger;
         private readonly IConfigService _configService;
+        private readonly ISubscribeConverterService _subscribeConverterService;
 
-        public JustMySocksController(ILogger<JustMySocksController> logger, IConfigService configService)
+        public JustMySocksController(ILogger<JustMySocksController> logger, IConfigService configService,
+            ISubscribeConverterService subscribeConverterService)
         {
             _logger = logger;
             _configService = configService;
+            _subscribeConverterService = subscribeConverterService;
         }
 
         [HttpGet]
@@ -64,6 +67,28 @@ namespace WebProject.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(500, ex, "GetServiceStatus接口异常");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("/JustMySocks/ConvertSubscribe")]
+        public async Task<ActionResult> ConvertSubscribeAsync([FromQuery] string url)
+        {
+            try
+            {
+                _logger.LogInformation($"订阅转换，url:{url},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
+
+                if (string.IsNullOrEmpty(url))
+                    return BadRequest();
+
+                var data = await _subscribeConverterService.ConvertSubscribeAsync(url);
+
+                return File(Encoding.UTF8.GetBytes(data), "APPLICATION/octet-stream", "ClashConfig.yaml");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(500, ex, "ConvertSubscribeAsync接口异常");
                 return BadRequest();
             }
         }

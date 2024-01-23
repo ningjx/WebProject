@@ -16,7 +16,6 @@ namespace JustMySocksService.Services
     {
         private const string sbLink = "https://jmssub.net/members/getsub.php?service={0}&id={1}&usedomains={2}";
         private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={0}&id={1}";
-        private const string configurl = "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/ClashConfigTemp.yaml";
 
         private static Regex SSInfoBase64Reg = new Regex(@"^(.+)(?=#)");
         private static Regex SSInfoReg = new Regex(@"^(.+?):(.+?)@(.+?):(\d+)$");
@@ -32,8 +31,8 @@ namespace JustMySocksService.Services
         {
             var link = string.Format(sbLink, service, id, useDomain ? 1 : 0);
 
-            var configText = GetDataFromUrlAsync(configurl);
-            var subInfos = GetSubInfosAsync(link);
+            var configText = GetDataFromUrlAsync(ConfigTempUrl);
+            var subInfos = GetProxiesFromUrlAsync(link);
 
             await Task.WhenAll(configText, subInfos);
 
@@ -91,7 +90,7 @@ namespace JustMySocksService.Services
 
         private static string[] ProxyNames = new string[] { "美国1", "美国2", "美国3", "日本", "荷兰", "美国0.1倍流量" };
 
-        private async Task<List<BaseProxy>> GetSubInfosAsync(string url)
+        private async Task<List<BaseProxy>> GetProxiesFromUrlAsync(string url)
         {
             var result = new List<BaseProxy>();
 
@@ -145,7 +144,7 @@ namespace JustMySocksService.Services
             return result;
         }
 
-        private static string ReplaceParamWith(string text, List<BaseProxy> proxies)
+        private string ReplaceParamWith(string text, List<BaseProxy> proxies)
         {
             var configBuilder = new StringBuilder();
             configBuilder.Append(text);

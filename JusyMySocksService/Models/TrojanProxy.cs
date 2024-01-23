@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Serialization;
+﻿using System.Reflection.Metadata;
+using YamlDotNet.Serialization;
 
 namespace JustMySocksService.Models
 {
@@ -12,7 +13,9 @@ namespace JustMySocksService.Models
         public bool udp = false;
         [YamlMember(Order = 7)]
         public string sni;
-        [YamlMember(Order = 8, Alias = "skip-cert-verify")]
+        [YamlMember(Order = 8, Alias = "allow-insecure")]
+        public bool allowInsecure;
+        [YamlMember(Order = 9, Alias = "skip-cert-verify")]
         public bool skipCertVerify = true;
     }
 }
