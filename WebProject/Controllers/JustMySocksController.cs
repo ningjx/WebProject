@@ -19,7 +19,7 @@ namespace WebProject.Controllers
             _configService = configService;
         }
 
-        [HttpGet()]
+        [HttpGet]
         //下面的标签不能动，很多地方用到了这个链接
         [Route("/JustMySocks")]
         public async Task<ActionResult> GetConfigAsync([FromQuery] string service, [FromQuery] string id, [FromQuery] bool useDomain = true)
