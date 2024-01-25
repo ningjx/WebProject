@@ -150,7 +150,7 @@ namespace JustMySocksService.Services
                     continue;
 
                 proxy.name = proxyNameStack.Pop();
-                proxyList += "\n  - ";
+                proxyList += "  - ";
                 proxyList += $"{yamlSerializer.Serialize(proxy)}";
             }
             configBuilder.Replace("{ProxyList}", proxyList);
