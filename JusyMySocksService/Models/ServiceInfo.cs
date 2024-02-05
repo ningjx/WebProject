@@ -12,5 +12,7 @@ namespace JustMySocksService.Models
         public long Used { get; set; } = 0;
 
         public long TimeStamp { get; set; } = 0;
+
+        public override string ToString() => $"upload=0; download={Used}; total={Limit}; expire={TimeStamp}";
     }
 }

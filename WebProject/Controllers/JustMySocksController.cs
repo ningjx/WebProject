@@ -1,7 +1,6 @@
 ﻿using JustMySocksService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Text;
 
 namespace WebProject.Controllers
@@ -39,7 +38,7 @@ namespace WebProject.Controllers
 
                 await Task.WhenAll(info, config);
 
-                HttpContext.Response.Headers.Add("Subscription-Userinfo", info.Result);
+                HttpContext.Response.Headers.Add("Subscription-Userinfo", info.Result.ToString());
                 return File(Encoding.UTF8.GetBytes(config.Result), "APPLICATION/octet-stream", "ClashConfig.yaml");
             }
             catch (Exception ex)
@@ -61,7 +60,7 @@ namespace WebProject.Controllers
                     return BadRequest();
 
                 var info = await _configService.GetServiceInfoAsync(service, id);
-                HttpContext.Response.Headers.Add("Subscription-Userinfo", info);
+                HttpContext.Response.Headers.Add("Subscription-Userinfo", info.ToString());
                 return Ok(JsonConvert.SerializeObject(info));
             }
             catch (Exception ex)
