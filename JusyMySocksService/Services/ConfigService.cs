@@ -39,7 +39,7 @@ namespace JustMySocksService.Services
             return BuildConfig(configText.Result, subInfos.Result);
         }
 
-        public async Task<ServiceInfo> GetServiceInfoAsync(string service, string id, bool convertValue = true)
+        public async Task<ServiceInfo> GetServiceInfoAsync(string service, string id, bool convertValue = false)
         {
             var info = await GetServiceInfo(service, id);
             //将数据从1000转换1024

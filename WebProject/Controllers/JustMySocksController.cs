@@ -33,7 +33,7 @@ namespace WebProject.Controllers
                 if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                     return BadRequest();
 
-                var info = _configService.GetServiceInfoAsync(service, id);
+                var info = _configService.GetServiceInfoAsync(service, id, true);
                 var config = _configService.GetLastestConfigAsync(service, id, useDomain);
 
                 await Task.WhenAll(info, config);
