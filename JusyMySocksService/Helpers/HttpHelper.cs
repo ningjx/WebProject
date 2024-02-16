@@ -23,7 +23,7 @@ namespace JustMySocksService.Helpers
             }
             catch(Exception e)
             {
-                logger.LogError(e, $"无法从{url}获取数据");
+                logger.LogError(e, $"无法从 {url} 获取数据");
             }
 
             return data;

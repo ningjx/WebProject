@@ -9,7 +9,8 @@ namespace JustMySocksService.Helpers
 {
     public static class TextHelper
     {
-        public const string ConfigTempUrl = "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/ClashConfigTemp.yaml";
+        public const string ConfigTempUrl = "https://raw.githubusercontent.com/ningjx/Clash-Rules/master/ClashConfigTemp.yaml";
+        //public const string ConfigTempUrl = "http://gh.con.sh/https://raw.githubusercontent.com/ningjx/Clash-Rules/master/ClashConfigTemp.yaml";
 
         public static Regex VmessSubscribeReg = new Regex(@"((?<=^vmess://).+?$)", RegexOptions.Multiline);
 
