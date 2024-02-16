@@ -31,7 +31,7 @@ namespace JustMySocksService.Services
         {
             var link = string.Format(sbLink, service, id, useDomain ? 1 : 0);
 
-            var configText = GetDataFromUrlAsync(ConfigTempUrl);
+            var configText = GetDataFromUrlAsync(ConfigTempUrl, _logger);
             var subInfos = GetProxiesFromUrlAsync(link);
 
             await Task.WhenAll(configText, subInfos);
@@ -56,7 +56,7 @@ namespace JustMySocksService.Services
         {
             var link = string.Format(infoLink, service, id);
             //var data = "{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
-            var data = await GetDataFromUrlAsync(link);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
+            var data = await GetDataFromUrlAsync(link, _logger);//"{\"monthly_bw_limit_b\":500000000000,\"bw_counter_b\":79018881709,\"bw_reset_day_of_month\":16}";
 
             var info = JsonConvert.DeserializeObject<ServiceInfo>(data);
             //Subscription-Userinfo: upload=2375927198; download=12983696043; total=1099511627776; expire=1862111613
@@ -96,7 +96,7 @@ namespace JustMySocksService.Services
         {
             var result = new List<BaseProxy>();
 
-            var data = await GetDataFromUrlAsync(url);
+            var data = await GetDataFromUrlAsync(url, _logger);
             data = data.Base64Decode();
 
             var ssSubs = SSSubscribeReg.Matches(data);

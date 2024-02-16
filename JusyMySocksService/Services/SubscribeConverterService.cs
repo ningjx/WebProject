@@ -29,7 +29,7 @@ namespace JustMySocksService.Services
         {
             var proxies = GetProxiesFromUrlAsync(url);
 
-            var configText = GetDataFromUrlAsync(ConfigTempUrl);
+            var configText = GetDataFromUrlAsync(ConfigTempUrl, _logger);
 
             await Task.WhenAll(proxies, configText);
 
@@ -40,7 +40,7 @@ namespace JustMySocksService.Services
         {
             var result = new List<BaseProxy>();
 
-            var data = await GetDataFromUrlAsync(url);
+            var data = await GetDataFromUrlAsync(url, _logger);
             data = data.Base64Decode();
 
             var ssSubs = SSSubscribeReg.Matches(data);
