@@ -139,6 +139,8 @@ namespace JustMySocksService.Services
         {
             var configBuilder = new StringBuilder();
             configBuilder.Append(text);
+            
+            configBuilder.Insert(0, $"#配置更新时间：{DateTime.Now:yyyy-MM-dd hh:mm:ss fff}");
 
             var yamlSerializer = new SerializerBuilder().WithNewLine("\n    ").Build();
 
