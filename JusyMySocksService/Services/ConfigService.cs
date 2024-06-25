@@ -17,8 +17,8 @@ namespace JustMySocksService.Services
         private const string sbLink = "https://mirror.ning.host/https://jmssub.net/members/getsub.php?service={0}&id={1}&usedomains={2}";
         private const string infoLink = "https://mirror.ning.host/https://justmysocks3.net/members/getbwcounter.php?service={0}&id={1}";
 
-        private static Regex SSInfoBase64Reg = new Regex(@"^(.+)(?=#)");
-        private static Regex SSInfoReg = new Regex(@"^(.+?):(.+?)@(.+?):(\d+)$");
+        private static readonly Regex SSInfoBase64Reg = new Regex(@"^(.+)(?=#)");
+        private static readonly Regex SSInfoReg = new Regex(@"^(.+?):(.+?)@(.+?):(\d+)$");
 
         private readonly ILogger _logger;
 
@@ -47,7 +47,7 @@ namespace JustMySocksService.Services
             {
                 info.Used = (long)(info.Used * 1.073741824d);
                 info.Limit = (long)(info.Limit * 1.073741824d);
-            } 
+            }
             return info;
         }
 
@@ -90,7 +90,7 @@ namespace JustMySocksService.Services
             return info;
         }
 
-        private static string[] ProxyNames = new string[] { "美国1", "美国2", "美国3", "日本", "荷兰", "美国0.1倍流量" };
+        private static readonly string[] ProxyNames = new string[] { "美国1", "美国2", "美国3", "日本", "荷兰", "美国0.1倍流量" };
 
         private async Task<List<BaseProxy>> GetProxiesFromUrlAsync(string url)
         {
@@ -128,19 +128,20 @@ namespace JustMySocksService.Services
 
                     var vmessProxyJMS = JsonConvert.DeserializeObject<VmessProxyJMS>(v2rayStr);
 
-                    result.Add(vmessProxyJMS);
+                    if (vmessProxyJMS != null)
+                        result.Add(vmessProxyJMS);
                 }
             }
 
             return result;
         }
 
-        private string BuildConfig(string text, List<BaseProxy> proxies)
+        private static string BuildConfig(string text, List<BaseProxy> proxies)
         {
             var configBuilder = new StringBuilder();
             configBuilder.Append(text);
-            
-            configBuilder.Insert(0, $"#配置更新时间：{DateTime.Now:yyyy-MM-dd hh:mm:ss fff}\n");
+
+            configBuilder.Insert(0, $"#配置更新时间：{DateTime.Now:yyyy-MM-dd hh:mm:ss.fff}\n");
 
             var yamlSerializer = new SerializerBuilder().WithNewLine("\n    ").Build();
 
