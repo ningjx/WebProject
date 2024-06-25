@@ -14,8 +14,8 @@ namespace JustMySocksService.Services
 {
     public class ConfigService : IConfigService
     {
-        private const string sbLink = "https://jmssub.net/members/getsub.php?service={0}&id={1}&usedomains={2}";
-        private const string infoLink = "https://justmysocks3.net/members/getbwcounter.php?service={0}&id={1}";
+        private const string sbLink = "https://mirror.ning.host/https://jmssub.net/members/getsub.php?service={0}&id={1}&usedomains={2}";
+        private const string infoLink = "https://mirror.ning.host/https://justmysocks3.net/members/getbwcounter.php?service={0}&id={1}";
 
         private static Regex SSInfoBase64Reg = new Regex(@"^(.+)(?=#)");
         private static Regex SSInfoReg = new Regex(@"^(.+?):(.+?)@(.+?):(\d+)$");
