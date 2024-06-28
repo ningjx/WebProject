@@ -28,7 +28,7 @@ namespace WebProject.Controllers
         {
             try
             {
-                _logger.LogInformation($"获取服务器配置，service:{service},id:{id},useDomain:{useDomain},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
+                _logger.LogInformation("获取服务器配置，service:{service},id:{id},useDomain:{useDomain},IP:{IP}", service, id, useDomain, HttpContext.Request.Headers["X-Real-Ip"]);
 
                 if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                     return BadRequest();
@@ -54,7 +54,7 @@ namespace WebProject.Controllers
         {
             try
             {
-                _logger.LogInformation($"获取剩余流量，service:{service},id:{id},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
+                _logger.LogInformation("获取剩余流量，service:{service},id:{id},IP:{IP}", service, id, HttpContext.Request.Headers["X-Real-Ip"]);
 
                 if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(id))
                     return BadRequest();
@@ -76,7 +76,7 @@ namespace WebProject.Controllers
         {
             try
             {
-                _logger.LogInformation($"订阅转换，url:{url},IP:{HttpContext.Request.Headers["X-Real-Ip"]}");
+                _logger.LogInformation("订阅转换，url:{url},IP:{IP}", url, HttpContext.Request.Headers["X-Real-Ip"]);
 
                 if (string.IsNullOrEmpty(url))
                     return BadRequest();

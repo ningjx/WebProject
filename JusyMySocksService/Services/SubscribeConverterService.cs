@@ -77,7 +77,7 @@ namespace JustMySocksService.Services
             return result;
         }
 
-        private string BuildConfig(string text, List<BaseProxy> proxies)
+        private static string BuildConfig(string text, List<BaseProxy> proxies)
         {
             var configBuilder = new StringBuilder();
             configBuilder.Append(text);
