@@ -9,9 +9,9 @@ namespace WebProject.Controllers
     {
 
         [HttpGet()]
-        public IActionResult GetDownload(string text)
+        public IActionResult GetDownload()
         {
-            return Ok(text);
+            return Ok();
         }
     }
 }
