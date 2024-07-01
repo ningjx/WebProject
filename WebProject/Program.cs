@@ -15,7 +15,7 @@ namespace WebProject
             builder.Services.AddRazorPages();
             builder.Services.AddControllers();
             builder.Services.AddSerilog();
-            builder.Services.AddSingleton<IConfigService,ConfigService>();
+            builder.Services.AddSingleton<IConfigService, ConfigService>();
             builder.Services.AddSingleton<ISubscribeConverterService, SubscribeConverterService>();
 
             var app = builder.Build();
@@ -36,10 +36,19 @@ namespace WebProject
                 outputTemplate: @"{Timestamp:yyyy-MM-dd HH:mm:ss.fff }[{Level:u3}] {Message:lj}{NewLine}{Exception}",  // 设置输出格式，显示详细异常信息
                 rollingInterval: RollingInterval.Day, //日志按天保存
                 rollOnFileSizeLimit: true,            // 限制单个文件的最大长度
-                fileSizeLimitBytes: 100 * 1024,        // 单个文件最大长度10K
+                fileSizeLimitBytes: 102400,        // 单个文件最大长度100K
                 encoding: Encoding.UTF8,              // 文件字符编码
                 retainedFileCountLimit: 10            // 最大保存文件数,超过最大文件数会自动覆盖原有文件
-            ).CreateLogger();
+            )
+            .WriteTo.File($"logs/{DateTime.Now:yyyy-MM-dd}_error_log.txt",
+                outputTemplate: @"{Timestamp:yyyy-MM-dd HH:mm:ss.fff }[{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                rollOnFileSizeLimit: true,
+                fileSizeLimitBytes: 102400,
+                encoding: Encoding.UTF8,
+                retainedFileCountLimit: 10,
+                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+            )
+            .CreateLogger();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
