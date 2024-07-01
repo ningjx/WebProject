@@ -1,5 +1,8 @@
 using JustMySocksService.Interfaces;
 using JustMySocksService.Services;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection;
 using Serilog;
 using System.Text;
 
@@ -17,6 +20,12 @@ namespace WebProject
             builder.Services.AddSerilog();
             builder.Services.AddSingleton<IConfigService, ConfigService>();
             builder.Services.AddSingleton<ISubscribeConverterService, SubscribeConverterService>();
+            builder.Services.AddDataProtection().UseCryptographicAlgorithms(
+            new AuthenticatedEncryptorConfiguration
+            {
+                EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+                ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+            });
 
             var app = builder.Build();
 
